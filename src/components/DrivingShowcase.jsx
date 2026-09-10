@@ -3,8 +3,8 @@ import { useTranslation } from 'react-i18next';
 
 const staticShowcaseConfig = [
   { bg: "bg-slate-800", videoSrc: `${import.meta.env.BASE_URL}assets/videos/video0.mp4` },
-  { bg: "bg-slate-700", videoSrc: `${import.meta.env.BASE_URL}assets/videos/video0.mp4` },
-  { bg: "bg-slate-900", videoSrc: `${import.meta.env.BASE_URL}assets/videos/video0.mp4` },
+  { bg: "bg-slate-700", videoSrc: `${import.meta.env.BASE_URL}assets/videos/video1.mp4` },
+  { bg: "bg-slate-900", videoSrc: `${import.meta.env.BASE_URL}assets/videos/video2.mp4` },
 ];
 
 export default function DrivingShowcase() {
