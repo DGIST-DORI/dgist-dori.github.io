@@ -26,7 +26,7 @@ export default function App() {
         <div className="fixed top-0 left-0 w-full h-screen flex items-center justify-center pointer-events-none z-0">
           <div className="w-64 h-64 md:w-[450px] md:h-[450px] bg-gray-200 rounded-full flex items-center justify-center shadow-inner pointer-events-auto">
             <span className="text-gray-500 font-medium text-center px-4">
-              로봇 렌더링 이미지
+              Robot Rendering
             </span>
           </div>
         </div>

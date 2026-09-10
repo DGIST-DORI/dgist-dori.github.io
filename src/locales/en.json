@@ -1,12 +1,12 @@
 {
   "hero": {
-    "title": "Catchphrase Here",
-    "subtitle": "Subtext goes here",
+    "title": "A Twist on Mobility",
+    "subtitle": "A Rubik's Cube-inspired spherical guide robot, made to move seamlessly from indoors and out.",
     "cta": "Scroll to Explore"
   },
   "mechanism": {
     "title": "Seamless Movement",
-    "subtitle": "How It Works",
+    "subtitle": "Mechanism",
     "item0": {
       "title": "Rubik's Cube Mechanism",
       "desc": "A spherical form factor freely rotating 360 degrees\nagilely changes direction while navigating the campus."
