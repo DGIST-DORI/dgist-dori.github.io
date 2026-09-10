@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 
 const showcaseItems = [
   { id: 1, title: "실내 복도 자율주행", description: "매끄러운 바닥 환경에서 부드러운 휠 구동", bg: "bg-slate-800" },
@@ -8,102 +8,87 @@ const showcaseItems = [
 
 export default function DrivingShowcase() {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [dragDelta, setDragDelta] = useState(0);
-  const [isDragging, setIsDragging] = useState(false);
-  const [isWheeling, setIsWheeling] = useState(false);
-  const dragStartXRef = useRef(null);
-  const stageRef = useRef(null);
-  const wheelDeltaRef = useRef(0);
-  const wheelTimeoutRef = useRef(null);
+  const scrollerRef = useRef(null);
+  const cardRefs = useRef([]);
+  const scrollSettleTimeoutRef = useRef(null);
+  const isDraggingRef = useRef(false);
+  const dragStartXRef = useRef(0);
+  const dragStartScrollLeftRef = useRef(0);
 
-  const handlePrev = () => {
-    setCurrentIndex((prev) => Math.max(prev - 1, 0));
+  // 현재 스크롤 위치에서 컨테이너 정중앙에 가장 가까운 카드의 인덱스를 계산
+  const getClosestIndex = useCallback(() => {
+    const container = scrollerRef.current;
+    if (!container) return 0;
+    const containerCenter = container.scrollLeft + container.clientWidth / 2;
+    let closestIndex = 0;
+    let closestDistance = Infinity;
+    cardRefs.current.forEach((card, i) => {
+      if (!card) return;
+      const cardCenter = card.offsetLeft + card.offsetWidth / 2;
+      const distance = Math.abs(cardCenter - containerCenter);
+      if (distance < closestDistance) {
+        closestDistance = distance;
+        closestIndex = i;
+      }
+    });
+    return closestIndex;
+  }, []);
+
+  // 특정 카드를 스크롤 컨테이너 정중앙으로 부드럽게 스크롤 (실제 DOM 크기 기준이라 반응형 대응 자동)
+  const scrollToIndex = useCallback((index) => {
+    const container = scrollerRef.current;
+    const card = cardRefs.current[index];
+    if (!container || !card) return;
+    const target = card.offsetLeft + card.offsetWidth / 2 - container.clientWidth / 2;
+    container.scrollTo({ left: target, behavior: 'smooth' });
+    setCurrentIndex(index);
+  }, []);
+
+  const handlePrev = () => scrollToIndex(Math.max(currentIndex - 1, 0));
+  const handleNext = () => scrollToIndex(Math.min(currentIndex + 1, showcaseItems.length - 1));
+
+  // 네이티브 스크롤(트랙패드/터치/스크롤바 — 전부 브라우저가 직접 처리)이 멎으면
+  // 가장 가까운 카드로 인디케이터/텍스트 상태만 동기화
+  const handleScroll = () => {
+    if (isDraggingRef.current) return; // 마우스 드래그 중엔 pointerup에서 별도 처리
+    clearTimeout(scrollSettleTimeoutRef.current);
+    scrollSettleTimeoutRef.current = setTimeout(() => {
+      setCurrentIndex(getClosestIndex());
+    }, 120);
   };
 
-  const handleNext = () => {
-    setCurrentIndex((prev) => Math.min(prev + 1, showcaseItems.length - 1));
-  };
-
-  const DRAG_THRESHOLD = 60; // 마우스/터치 드래그: 이 거리(px) 이상 끌어야 다음/이전 카드로 스냅됨
-  const WHEEL_SNAP_THRESHOLD = 200; // 트랙패드 스와이프: 드래그보다 높게 잡아 과민 반응 방지
-  const WHEEL_DAMPING = 0.8; // 트랙패드 delta 감도 완화
-
+  // 데스크탑 마우스 전용 '드래그로 스크롤' — 트랙패드 스와이프나 터치 스크롤은
+  // 브라우저가 이미 네이티브로 처리하므로 이 로직이 필요 없고, 개입하지 않음
   const handlePointerDown = (e) => {
+    if (e.pointerType !== 'mouse') return;
+    const container = scrollerRef.current;
+    if (!container) return;
+    isDraggingRef.current = true;
     dragStartXRef.current = e.clientX;
-    setIsDragging(true);
-    e.currentTarget.setPointerCapture?.(e.pointerId);
+    dragStartScrollLeftRef.current = container.scrollLeft;
+    container.style.scrollSnapType = 'none'; // 드래그 중엔 스냅을 잠깐 풀어 손 움직임을 그대로 따라가게 함
+    container.style.cursor = 'grabbing';
+    container.setPointerCapture?.(e.pointerId);
   };
 
   const handlePointerMove = (e) => {
-    if (dragStartXRef.current === null) return;
-    setDragDelta(e.clientX - dragStartXRef.current);
+    if (!isDraggingRef.current) return;
+    const container = scrollerRef.current;
+    if (!container) return;
+    container.scrollLeft = dragStartScrollLeftRef.current - (e.clientX - dragStartXRef.current);
   };
 
-  const handlePointerUp = () => {
-    if (dragStartXRef.current === null) return;
-    if (dragDelta <= -DRAG_THRESHOLD) {
-      handleNext();
-    } else if (dragDelta >= DRAG_THRESHOLD) {
-      handlePrev();
-    }
-    dragStartXRef.current = null;
-    setDragDelta(0);
-    setIsDragging(false);
+  const endDrag = () => {
+    if (!isDraggingRef.current) return;
+    isDraggingRef.current = false;
+    const container = scrollerRef.current;
+    if (!container) return;
+    container.style.scrollSnapType = 'x mandatory'; // 스냅 복원
+    container.style.cursor = 'grab';
+    scrollToIndex(getClosestIndex()); // 놓은 지점에서 가장 가까운 카드로 스냅
   };
 
-  // 드래그 도중 카드를 눌렀다 뗀 것이 '클릭'으로 오인되어 엉뚱한 카드로 튀지 않도록 방지
-  const handleCardClick = (index) => {
-    if (Math.abs(dragDelta) > 5) return;
-    setCurrentIndex(index);
-  };
-
-  // 트랙패드 좌우 스크롤(휠 제스처) 처리 — pointer 이벤트로는 안 잡히는 두 손가락 스와이프용
-  useEffect(() => {
-    const el = stageRef.current;
-    if (!el) return undefined;
-
-    // 제스처가 끝난 뒤(손을 떼거나 관성이 멈춘 뒤) 남은 자투리 오프셋을 원위치로 되돌림
-    const settleWheel = () => {
-      wheelDeltaRef.current = 0;
-      setDragDelta(0);
-      setIsWheeling(false);
-    };
-
-    const onWheel = (e) => {
-      // 가로/세로 판정은 매 이벤트마다 독립적으로 — 제스처 시작 시 한 번만 판정해서 고정해두면
-      // 초반의 미세한 대각선 흔들림 때문에 실제로는 가로 스와이프인데도 세로로 오판되어
-      // 그 뒤로 preventDefault가 한 번도 안 불리고, 그 결과 사파리가 뒤로가기/앞으로가기
-      // 제스처로 받아버리는 문제가 있었음. 매번 개별 판정하면 가로 이벤트는 절대 놓치지 않음.
-      if (Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return; // 세로 스크롤은 페이지에 그대로 맡김
-
-      e.preventDefault();
-      setIsWheeling(true);
-
-      wheelDeltaRef.current -= e.deltaX * WHEEL_DAMPING;
-
-      if (wheelDeltaRef.current <= -WHEEL_SNAP_THRESHOLD) {
-        handleNext();
-        wheelDeltaRef.current = 0;
-        setDragDelta(0);
-      } else if (wheelDeltaRef.current >= WHEEL_SNAP_THRESHOLD) {
-        handlePrev();
-        wheelDeltaRef.current = 0;
-        setDragDelta(0);
-      } else {
-        setDragDelta(wheelDeltaRef.current);
-      }
-
-      clearTimeout(wheelTimeoutRef.current);
-      wheelTimeoutRef.current = setTimeout(settleWheel, 150);
-    };
-
-    el.addEventListener('wheel', onWheel, { passive: false });
-    return () => {
-      el.removeEventListener('wheel', onWheel);
-      clearTimeout(wheelTimeoutRef.current);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  useEffect(() => () => clearTimeout(scrollSettleTimeoutRef.current), []);
 
   const currentItem = showcaseItems[currentIndex];
 
@@ -118,34 +103,37 @@ export default function DrivingShowcase() {
 
       {/* 
         [1] 좌우 끝까지 확장된 풀 스크롤 무대 영역
+        네이티브 CSS Scroll Snap 사용 — 트랙패드/터치/스크롤바를 브라우저가 직접 처리해서
+        감도 튜닝, 관성 처리, 사파리 뒤로가기 제스처 같은 문제를 JS로 재현할 필요가 없음
       */}
       <div 
-        ref={stageRef}
-        className="relative w-full w-screen -mx-6 md:-mx-20 h-[320px] md:h-[380px] bg-slate-100 flex items-center overflow-hidden shadow-inner select-none [--card-w:300px] [--card-gap:24px] md:[--card-w:700px] md:[--card-gap:32px]"
-        style={{ touchAction: 'pan-y', cursor: isDragging ? 'grabbing' : 'grab', overscrollBehaviorX: 'contain' }}
+        ref={scrollerRef}
+        onScroll={handleScroll}
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
-        onPointerUp={handlePointerUp}
-        onPointerLeave={() => { if (isDragging) handlePointerUp(); }}
-        onPointerCancel={() => { if (isDragging) handlePointerUp(); }}
+        onPointerUp={endDrag}
+        onPointerLeave={endDrag}
+        onPointerCancel={endDrag}
+        className="relative w-full w-screen -mx-6 md:-mx-20 h-[320px] md:h-[380px] bg-slate-100 flex items-center overflow-x-auto shadow-inner select-none [--card-w:300px] md:[--card-w:700px] [scroll-snap-type:x_mandatory] [&::-webkit-scrollbar]:hidden"
+        style={{ 
+          scrollbarWidth: 'none',
+          msOverflowStyle: 'none',
+          WebkitOverflowScrolling: 'touch',
+          overscrollBehaviorX: 'contain',
+          paddingInline: 'calc(50% - var(--card-w) / 2)',
+          cursor: 'grab',
+        }}
       >
-        
-        {/* 슬라이드 트랙 (CSS 변수 기반 중앙 정렬 + 드래그/휠 오프셋 반영, 제스처 중엔 트랜지션 해제) */}
-        <div 
-          className={`flex items-center gap-6 md:gap-8 ease-out ${isDragging || isWheeling ? '' : 'transition-transform duration-500'}`}
-          style={{ 
-            '--index': currentIndex,
-            transform: `translateX(calc(50vw - (var(--card-w) / 2) - (var(--index) * (var(--card-w) + var(--card-gap))) + ${dragDelta}px))`
-          }}
-        >
+        <div className="flex items-center gap-6 md:gap-8">
           {showcaseItems.map((item, index) => {
             const isActive = index === currentIndex;
             return (
               <div
                 key={item.id}
-                onClick={() => handleCardClick(index)}
+                ref={(el) => { cardRefs.current[index] = el; }}
+                onClick={() => scrollToIndex(index)}
                 // 모서리 둥글기 복구 (rounded-3xl)
-                className={`flex-shrink-0 w-[300px] md:w-[700px] h-[260px] md:h-[340px] rounded-3xl flex items-center justify-center text-white shadow-xl cursor-pointer transition-all duration-300 ${item.bg} ${
+                className={`flex-shrink-0 w-[300px] md:w-[700px] h-[260px] md:h-[340px] rounded-3xl flex items-center justify-center text-white shadow-xl cursor-pointer transition-all duration-300 [scroll-snap-align:center] [scroll-snap-stop:always] ${item.bg} ${
                   isActive ? "opacity-100 scale-100 z-10" : "opacity-40 hover:opacity-70 scale-95"
                 }`}
               >
@@ -154,7 +142,6 @@ export default function DrivingShowcase() {
             );
           })}
         </div>
-
       </div>
 
       {/* 
@@ -165,14 +152,14 @@ export default function DrivingShowcase() {
         {/* 좌측 균형용 빈 공간 */}
         <div className="w-12 md:w-24"></div>
 
-        {/* Dori 'o' 인디케이터 (스크롤 영역 바로 밑에 중앙 정렬 복원) */}
+        {/* Dori 'o' 인디케이터 */}
         <div className="flex items-center gap-3">
           {showcaseItems.map((_, index) => {
             const isActive = index === currentIndex;
             return (
               <button
                 key={index}
-                onClick={() => setCurrentIndex(index)}
+                onClick={() => scrollToIndex(index)}
                 aria-label={`Go to slide ${index + 1}`}
                 className={`transition-all duration-300 ease-out border-2 border-black bg-transparent rounded-full cursor-pointer ${
                   isActive 
@@ -184,11 +171,12 @@ export default function DrivingShowcase() {
           })}
         </div>
 
-        {/* 우측 화살표 버튼 */}
+        {/* 우측 화살표 버튼 — 첫/마지막 카드에서는 비활성화 (순환하지 않음) */}
         <div className="flex items-center gap-3">
           <button 
             onClick={handlePrev}
-            className="w-12 h-12 rounded-full border border-black/20 bg-white flex items-center justify-center hover:bg-black hover:text-white transition-colors shadow-sm cursor-pointer"
+            disabled={currentIndex === 0}
+            className="w-12 h-12 rounded-full border border-black/20 bg-white flex items-center justify-center hover:bg-black hover:text-white transition-colors shadow-sm cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-white disabled:hover:text-black"
             aria-label="Previous slide"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -197,7 +185,8 @@ export default function DrivingShowcase() {
           </button>
           <button 
             onClick={handleNext}
-            className="w-12 h-12 rounded-full border border-black/20 bg-white flex items-center justify-center hover:bg-black hover:text-white transition-colors shadow-sm cursor-pointer"
+            disabled={currentIndex === showcaseItems.length - 1}
+            className="w-12 h-12 rounded-full border border-black/20 bg-white flex items-center justify-center hover:bg-black hover:text-white transition-colors shadow-sm cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-white disabled:hover:text-black"
             aria-label="Next slide"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
