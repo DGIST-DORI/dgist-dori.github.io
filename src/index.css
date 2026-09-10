@@ -1,0 +1,13 @@
+@import "tailwindcss";
+
+@theme {
+  /* v4 방식으로 커스텀 애니메이션 등록 */
+  --animate-slide-down-loop: slideDownLoop 1.5s infinite cubic-bezier(0.4, 0, 0.2, 1);
+  
+  @keyframes slideDownLoop {
+    0% { transform: translateY(-180%); opacity: 0; }
+    20% { opacity: 1; }
+    80% { opacity: 1; }
+    100% { transform: translateY(180%); opacity: 0; }
+  }
+}
