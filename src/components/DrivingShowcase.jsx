@@ -1,15 +1,31 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 
 const showcaseItems = [
-  { id: 1, title: "실내 복도 자율주행", description: "매끄러운 바닥 환경에서 부드러운 휠 구동", bg: "bg-slate-800" },
-  { id: 2, title: "휠 트랜스폼 시연", description: "구형태에서 루빅스 큐브 회전 및 바퀴 전환", bg: "bg-slate-700" },
-  { id: 3, title: "실외 보도블록 주행", description: "거친 노면 환경 대응 실외용 바퀴 모드", bg: "bg-slate-900" },
+  { id: 1,
+    title: "실내 복도 자율주행",
+    description: "매끄러운 바닥 환경에서 부드러운 휠 구동",
+    bg: "bg-slate-800",
+    videoSrc: `${import.meta.env.BASE_URL}assets/videos/video0.mp4`
+  },
+  { id: 2,
+    title: "휠 트랜스폼 시연",
+    description: "구형태에서 루빅스 큐브 회전 및 바퀴 전환",
+    bg: "bg-slate-700",
+    videoSrc: `${import.meta.env.BASE_URL}assets/videos/video1.mp4`
+  },
+  { id: 3,
+    title: "실외 보도블록 주행",
+    description: "거친 노면 환경 대응 실외용 바퀴 모드",
+    bg: "bg-slate-900",
+    videoSrc: `${import.meta.env.BASE_URL}assets/videos/video1.mp4`
+  },
 ];
 
 export default function DrivingShowcase() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const scrollerRef = useRef(null);
   const cardRefs = useRef([]);
+  const videoRefs = useRef([]);
   const scrollSettleTimeoutRef = useRef(null);
   const isDraggingRef = useRef(false);
   const dragStartXRef = useRef(0);
@@ -88,6 +104,20 @@ export default function DrivingShowcase() {
     scrollToIndex(getClosestIndex()); // 놓은 지점에서 가장 가까운 카드로 스냅
   };
 
+  useEffect(() => {
+    videoRefs.current.forEach((videoEl, index) => {
+      if (!videoEl) return;
+      if (index === currentIndex) {
+        videoEl.currentTime = 0;
+        videoEl.play().catch(() => {
+          // 브라우저 정책상 자동재생 제약이 걸릴 경우 대비 예외처리
+        });
+      } else {
+        videoEl.pause();
+      }
+    });
+  }, [currentIndex]);
+
   useEffect(() => () => clearTimeout(scrollSettleTimeoutRef.current), []);
 
   const currentItem = showcaseItems[currentIndex];
@@ -133,12 +163,19 @@ export default function DrivingShowcase() {
                   key={item.id}
                   ref={(el) => { cardRefs.current[index] = el; }}
                   onClick={() => scrollToIndex(index)}
-                  // 모서리 둥글기 복구 (rounded-3xl)
-                  className={`flex-shrink-0 w-[300px] md:w-[700px] h-[260px] md:h-[340px] rounded-3xl flex items-center justify-center text-white shadow-xl cursor-pointer transition-all duration-300 [scroll-snap-align:center] [scroll-snap-stop:always] ${item.bg} ${
+                  className={`relative flex-shrink-0 w-[300px] md:w-[700px] h-[260px] md:h-[340px] rounded-3xl overflow-hidden flex items-center justify-center text-white shadow-xl cursor-pointer transition-all duration-300 [scroll-snap-align:center] [scroll-snap-stop:always] ${item.bg} ${
                     isActive ? "opacity-100 scale-100 z-10" : "opacity-40 hover:opacity-70 scale-95"
                   }`}
                 >
-                  <span className="text-gray-400 font-medium">시연 영상/이미지</span>
+                  {/* 시연 영상 태그 적용 (자동 재생, 음소거, 루프, 인라인 재생) */}
+                  <video
+                    ref={(el) => { videoRefs.current[index] = el; }}
+                    src={item.videoSrc}
+                    muted
+                    loop
+                    playsInline
+                    className="absolute inset-0 w-full h-full object-cover"
+                  />
                 </div>
               );
             })}
