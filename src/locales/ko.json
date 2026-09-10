@@ -5,8 +5,8 @@
     "cta": "Scroll to Explore"
   },
   "mechanism": {
-    "tagline": "매끄러운 움직임",
-    "title": "구동 원리",
+    "title": "매끄러운 움직임",
+    "subtitle": "구동 원리",
     "item0": {
       "title": "루빅스 큐브 회전 메커니즘",
       "desc": "360도로 자유롭게 회전하는 구형 폼팩터가\n주행 방향을 민첩하게 전환하며 캠퍼스를 누빕니다."

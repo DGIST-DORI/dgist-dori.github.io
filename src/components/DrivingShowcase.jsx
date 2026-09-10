@@ -1,29 +1,25 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 
+const staticShowcaseConfig = [
+  { bg: "bg-slate-800", videoSrc: `${import.meta.env.BASE_URL}assets/videos/video0.mp4` },
+  { bg: "bg-slate-700", videoSrc: `${import.meta.env.BASE_URL}assets/videos/video0.mp4` },
+  { bg: "bg-slate-900", videoSrc: `${import.meta.env.BASE_URL}assets/videos/video0.mp4` },
+];
+
 export default function DrivingShowcase() {
     const { t } = useTranslation();
 
-    const showcaseItems = [
-    { id: 1,
-        title: t('drivingShowcase.item0.title'),
-        description: t('drivingShowcase.item0.description'),
-        bg: "bg-slate-800",
-        videoSrc: `${import.meta.env.BASE_URL}assets/videos/video0.mp4`
-    },
-    { id: 2,
-        title: t('drivingShowcase.item1.title'),
-        description: t('drivingShowcase.item1.description'),
-        bg: "bg-slate-700",
-        videoSrc: `${import.meta.env.BASE_URL}assets/videos/video1.mp4`
-    },
-    { id: 3,
-        title: t('drivingShowcase.item2.title'),
-        description: t('drivingShowcase.item2.description'),
-        bg: "bg-slate-900",
-        videoSrc: `${import.meta.env.BASE_URL}assets/videos/video1.mp4`
-    },
-    ];
+    const translatedItems = t('showcase.items', { returnObjects: true });
+
+    // 번역된 텍스트 배열과 정적 데이터 배열을 합쳐서 최종 렌더링할 객체 배열을 만듭니다.
+    const showcaseItems = translatedItems.map((item, index) => ({
+        id: index + 1,
+        title: item.title,
+        description: item.desc,
+        bg: staticShowcaseConfig[index].bg,
+        videoSrc: staticShowcaseConfig[index].videoSrc
+    }));
 
     const [currentIndex, setCurrentIndex] = useState(0);
     const scrollerRef = useRef(null);

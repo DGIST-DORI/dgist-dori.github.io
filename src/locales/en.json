@@ -5,8 +5,8 @@
     "cta": "Scroll to Explore"
   },
   "mechanism": {
-    "tagline": "Seamless Movement",
-    "title": "How It Works",
+    "title": "Seamless Movement",
+    "subtitle": "How It Works",
     "item0": {
       "title": "Rubik's Cube Mechanism",
       "desc": "A spherical form factor freely rotating 360 degrees\nagilely changes direction while navigating the campus."
