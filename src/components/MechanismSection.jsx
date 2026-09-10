@@ -14,11 +14,11 @@ export default function MechanismSection() {
   const text2Ref = useRef(null);
 
   useGSAP(() => {
-    // 1. 섹션 전체를 화면에 고정하는 메인 ScrollTrigger (1500px 동안 고정)
+    // 1. 섹션 전체를 화면에 고정하는 메인 ScrollTrigger (1600px 동안 고정)
     ScrollTrigger.create({
       trigger: sectionRef.current,
       start: "top top",
-      end: "+=1500", 
+      end: "+=1600", 
       pin: true,
       // 여기서는 scrub이나 animation을 넣지 않고 오직 '화면 고정' 역할만 합니다.
     });
