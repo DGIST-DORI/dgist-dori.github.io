@@ -25,7 +25,6 @@ export default function DrivingShowcase() {
     },
     ];
 
-    export default function DrivingShowcase() {
     const [currentIndex, setCurrentIndex] = useState(0);
     const scrollerRef = useRef(null);
     const cardRefs = useRef([]);
@@ -131,8 +130,8 @@ export default function DrivingShowcase() {
         
         {/* 상단 타이틀 */}
         <div className="text-left flex-shrink-0">
-            <h2 className="text-4xl md:text-5xl font-extrabold mb-2 tracking-tight">도리 굴러가요</h2>
-            <p className="text-lg md:text-xl font-medium text-gray-600">주행 시연 & 자율 주행 시뮬레이션</p>
+            <h2 className="text-4xl md:text-5xl font-extrabold mb-2 tracking-tight">{t('showcase.title')}</h2>
+            <p className="text-lg md:text-xl font-medium text-gray-600">{t('showcase.subtitle')}</p>
         </div>
 
         {/* 
@@ -250,5 +249,4 @@ export default function DrivingShowcase() {
 
         </section>
     );
-    }
 }

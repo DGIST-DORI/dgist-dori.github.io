@@ -7,11 +7,11 @@
   "mechanism": {
     "tagline": "Seamless Movement",
     "title": "How It Works",
-    "item1": {
+    "item0": {
       "title": "Rubik's Cube Mechanism",
       "desc": "A spherical form factor freely rotating 360 degrees\nagilely changes direction while navigating the campus."
     },
-    "item2": {
+    "item1": {
       "title": "Seamless Wheel Transform",
       "desc": "Detects road conditions and physically rotates\nto switch between smooth indoor and rugged outdoor wheels."
     }
