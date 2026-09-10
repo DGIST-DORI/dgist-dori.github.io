@@ -1,0 +1,43 @@
+{
+  "hero": {
+    "title": "Catchphrase Here",
+    "subtitle": "Subtext goes here",
+    "cta": "Scroll to Explore"
+  },
+  "mechanism": {
+    "tagline": "Seamless Movement",
+    "title": "How It Works",
+    "item1": {
+      "title": "Rubik's Cube Mechanism",
+      "desc": "A spherical form factor freely rotating 360 degrees\nagilely changes direction while navigating the campus."
+    },
+    "item2": {
+      "title": "Seamless Wheel Transform",
+      "desc": "Detects road conditions and physically rotates\nto switch between smooth indoor and rugged outdoor wheels."
+    }
+  },
+  "showcase": {
+    "title": "Dori Rolls On",
+    "subtitle": "Driving Demo & Autonomous Simulation",
+    "items": [
+      {
+        "title": "Indoor Hallway Driving",
+        "desc": "Smooth wheel operation in a flat floor environment"
+      },
+      {
+        "title": "Wheel Transform Demo",
+        "desc": "Rubik's cube rotation and wheel switching"
+      },
+      {
+        "title": "Outdoor Sidewalk Driving",
+        "desc": "Outdoor wheel mode for rough road surfaces"
+      }
+    ],
+    "prev": "Previous slide",
+    "next": "Next slide",
+    "goto": "Go to slide {{index}}"
+  },
+  "app": {
+    "robotAlt": "Robot Rendering Image"
+  }
+}

@@ -1,13 +1,14 @@
 import React from 'react';
 import logoText from '../assets/logo/logo-text.svg';
-// GSAP 플러그인 불러오기
 import gsap from 'gsap';
 import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
+import { useTranslation } from 'react-i18next';
 
-// 플러그인 등록
 gsap.registerPlugin(ScrollToPlugin);
 
 export default function HeroSection() {
+  const { t } = useTranslation();
+
   const scrollToMechanism = () => {
     // 기본 스크롤(scrollIntoView) 대신 GSAP 애니메이션으로 스크롤을 제어합니다.
     gsap.to(window, {
@@ -21,10 +22,10 @@ export default function HeroSection() {
     <section className="relative w-full h-screen flex flex-col items-center justify-between py-24 px-4 pointer-events-auto">
       <div className="text-center mt-8">
         <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight mb-4">
-          캐치프레이즈 캐치
+          {t('hero.title')}
         </h1>
         <p className="text-lg md:text-xl font-medium text-gray-800">
-          서브텍스트
+          {t('hero.subtitle')}
         </p>
       </div>
       
@@ -35,7 +36,7 @@ export default function HeroSection() {
           onClick={scrollToMechanism}
           className="relative overflow-hidden flex items-center justify-between w-56 px-6 py-4 bg-slate-900 text-white rounded-full hover:bg-slate-800 transition-colors shadow-lg cursor-pointer"
         >
-          <span className="font-medium">Scroll to Explore</span>
+          <span className="font-medium">{t('hero.cta')}</span>
           <div className="relative w-5 h-5 flex items-center justify-center">
             <svg 
               className="w-5 h-5 absolute animate-slide-down-loop" 
