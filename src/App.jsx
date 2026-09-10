@@ -22,7 +22,7 @@ function MainPage() {
   // 프레임 수 정의 (0부터 시작하므로 총 개수는 마지막 인덱스 + 1)
   const driveFrames = 28;      // 0 ~ 27
   const transformFrames = 135; // 0 ~ 134
-  const driveAltFrames = 36;   // 0 ~ 35
+  const driveAltFrames = 28;   // 0 ~ 27
   const totalFrames = driveFrames + transformFrames + driveAltFrames;
 
   useEffect(() => {
