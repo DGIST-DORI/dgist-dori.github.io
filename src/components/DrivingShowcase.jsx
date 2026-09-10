@@ -106,41 +106,43 @@ export default function DrivingShowcase() {
         네이티브 CSS Scroll Snap 사용 — 트랙패드/터치/스크롤바를 브라우저가 직접 처리해서
         감도 튜닝, 관성 처리, 사파리 뒤로가기 제스처 같은 문제를 JS로 재현할 필요가 없음
       */}
-      <div 
-        ref={scrollerRef}
-        onScroll={handleScroll}
-        onPointerDown={handlePointerDown}
-        onPointerMove={handlePointerMove}
-        onPointerUp={endDrag}
-        onPointerLeave={endDrag}
-        onPointerCancel={endDrag}
-        className="relative w-full w-screen -mx-6 md:-mx-20 h-[320px] md:h-[380px] bg-slate-100 flex items-center overflow-x-auto shadow-inner select-none [--card-w:300px] md:[--card-w:700px] [scroll-snap-type:x_mandatory] [&::-webkit-scrollbar]:hidden"
-        style={{ 
-          scrollbarWidth: 'none',
-          msOverflowStyle: 'none',
-          WebkitOverflowScrolling: 'touch',
-          overscrollBehaviorX: 'contain',
-          paddingInline: 'calc(50% - var(--card-w) / 2)',
-          cursor: 'grab',
-        }}
-      >
-        <div className="flex items-center gap-6 md:gap-8">
-          {showcaseItems.map((item, index) => {
-            const isActive = index === currentIndex;
-            return (
-              <div
-                key={item.id}
-                ref={(el) => { cardRefs.current[index] = el; }}
-                onClick={() => scrollToIndex(index)}
-                // 모서리 둥글기 복구 (rounded-3xl)
-                className={`flex-shrink-0 w-[300px] md:w-[700px] h-[260px] md:h-[340px] rounded-3xl flex items-center justify-center text-white shadow-xl cursor-pointer transition-all duration-300 [scroll-snap-align:center] [scroll-snap-stop:always] ${item.bg} ${
-                  isActive ? "opacity-100 scale-100 z-10" : "opacity-40 hover:opacity-70 scale-95"
-                }`}
-              >
-                <span className="text-gray-400 font-medium">시연 영상/이미지</span>
-              </div>
-            );
-          })}
+      <div className="relative w-full w-screen -mx-6 md:-mx-20 h-[320px] md:h-[380px] bg-slate-100 shadow-inner overflow-hidden">
+        <div 
+          ref={scrollerRef}
+          onScroll={handleScroll}
+          onPointerDown={handlePointerDown}
+          onPointerMove={handlePointerMove}
+          onPointerUp={endDrag}
+          onPointerLeave={endDrag}
+          onPointerCancel={endDrag}
+          className="w-full h-full flex items-center overflow-x-auto select-none [--card-w:300px] md:[--card-w:700px] [scroll-snap-type:x_mandatory] [&::-webkit-scrollbar]:hidden"
+          style={{ 
+            scrollbarWidth: 'none',
+            msOverflowStyle: 'none',
+            WebkitOverflowScrolling: 'touch',
+            overscrollBehaviorX: 'contain',
+            paddingInline: 'calc(50% - var(--card-w) / 2)',
+            cursor: 'grab',
+          }}
+        >
+          <div className="flex items-center gap-6 md:gap-8">
+            {showcaseItems.map((item, index) => {
+              const isActive = index === currentIndex;
+              return (
+                <div
+                  key={item.id}
+                  ref={(el) => { cardRefs.current[index] = el; }}
+                  onClick={() => scrollToIndex(index)}
+                  // 모서리 둥글기 복구 (rounded-3xl)
+                  className={`flex-shrink-0 w-[300px] md:w-[700px] h-[260px] md:h-[340px] rounded-3xl flex items-center justify-center text-white shadow-xl cursor-pointer transition-all duration-300 [scroll-snap-align:center] [scroll-snap-stop:always] ${item.bg} ${
+                    isActive ? "opacity-100 scale-100 z-10" : "opacity-40 hover:opacity-70 scale-95"
+                  }`}
+                >
+                  <span className="text-gray-400 font-medium">시연 영상/이미지</span>
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
 
