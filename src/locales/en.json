@@ -1,7 +1,7 @@
 {
   "hero": {
     "title": "A Twist on Mobility",
-    "subtitle": "A Rubik's Cube-inspired spherical guide robot, made to move seamlessly from indoors and out.",
+    "subtitle": "A Rubik's Cube-inspired spherical guide robot, <br class='block md:hidden' />made to move seamlessly from indoors and out.",
     "cta": "Scroll to Explore"
   },
   "mechanism": {
