@@ -96,14 +96,15 @@ function MainPage() {
 
       // 3단계 애니메이션의 상대적 지속 거리 설정
       const d1 = h + text1Offset;          // Hero 전체 + 텍스트1 등장 직전까지
-      const d2 = pinDistance - text1Offset; // 텍스트1 등장 후 Mechanism 고정 해제까지
+      const d2_hold = 200; // 텍스트 2 등장까지
+      const d2 = pinDistance - text1Offset - d2_hold; // 텍스트2 등장 후 Mechanism 고정 해제까지
       const d3 = h;                        // 다음 섹션(DrivingShowcase)이 화면을 덮을 때까지
 
       const masterTl = gsap.timeline({
         scrollTrigger: {
           trigger: document.body,
           start: "top top",
-          end: () => "+=" + (h * 2 + pinDistance),
+          end: () => "+=" + (d1 + d2_hold + d2 + d3),
           scrub: 0.5,
         },
         onUpdate: drawFrame
@@ -145,6 +146,7 @@ function MainPage() {
         <div className="relative z-10">
           <HeroSection />
           <MechanismSection />
+          <div className="w-full" style={{ height: '50vh' }}></div>
         </div>
 
         <div className="relative z-20 w-full bg-white">

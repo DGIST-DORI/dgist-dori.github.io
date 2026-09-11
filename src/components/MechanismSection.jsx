@@ -51,8 +51,8 @@ export default function MechanismSection() {
         ease: 'power2.out',
         scrollTrigger: {
           trigger: wrapperRef.current,
-          // 고정된 상태에서 600px 정도 추가로 스크롤을 내렸을 때 발동!
-          start: "top -400px", 
+          // 고정된 상태에서 200px 정도 추가로 스크롤을 내렸을 때 발동
+          start: "top -200px", 
           toggleActions: "play none none reverse" 
         }
       }
