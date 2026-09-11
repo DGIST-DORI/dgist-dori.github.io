@@ -6,6 +6,7 @@ import MechanismSection from './components/MechanismSection';
 import DrivingShowcase from './components/DrivingShowcase';
 import Footer from './components/Footer';
 import CountryRegionPage from './components/CountryRegionPage';
+import ScrollToTop from './components/ScrollToTop';
 
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
