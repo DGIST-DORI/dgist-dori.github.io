@@ -67,7 +67,7 @@ export default function MechanismSection() {
       <section 
         id="mechanism-section" 
         ref={sectionRef} 
-        className="relative w-full h-screen flex flex-col justify-between md:justify-center px-8 md:px-24 py-24 md:py-0 pointer-events-auto bg-transparent z-10"
+        className="relative w-full h-dvh flex flex-col justify-between md:justify-center px-8 md:px-24 py-24 md:py-0 pointer-events-auto bg-transparent z-10"
       >
         <div className="w-full md:w-[450px] h-full md:h-auto flex flex-col justify-between md:justify-center">
           

@@ -19,7 +19,7 @@ export default function HeroSection() {
   };
 
   return (
-    <section className="relative w-full h-screen flex flex-col items-center justify-between py-14 px-4 pointer-events-auto">
+    <section className="relative w-full h-dvh flex flex-col items-center justify-between py-14 px-4 pointer-events-auto">
       <div className="text-center mt-8">
         <h1 
           className="text-5xl md:text-7xl font-extrabold tracking-tight mb-4 break-keep"

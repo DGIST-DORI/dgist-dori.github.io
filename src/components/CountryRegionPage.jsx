@@ -17,7 +17,7 @@ export default function CountryRegionPage() {
   };
 
   return (
-    <div className="min-h-screen bg-white pt-24 px-6 md:px-20 z-40 relative">
+    <div className="min-h-dvh bg-white pt-24 px-6 md:px-20 z-40 relative">
       <div className="max-w-4xl mx-auto">
         <h1 className="text-3xl md:text-4xl font-bold mb-10 text-black">
           Choose Your Country or Region

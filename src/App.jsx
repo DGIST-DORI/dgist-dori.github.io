@@ -126,7 +126,7 @@ function MainPage() {
     <>
       <main className="relative w-full">
         <div 
-          className="fixed top-0 left-0 w-full h-screen flex items-center justify-center pointer-events-none z-0"
+          className="fixed top-0 left-0 w-full h-dvh flex items-center justify-center pointer-events-none z-0"
           style={{ perspective: '1000px' }}
         >
           <div 
@@ -160,7 +160,7 @@ function MainPage() {
 
 export default function App() {
   return (
-    <div className="min-h-screen bg-white text-black font-sans antialiased selection:bg-slate-200">
+    <div className="min-h-dvh bg-white text-black font-sans antialiased selection:bg-slate-200">
       <Router basename={import.meta.env.BASE_URL}>
         <ScrollToTop />
         <Header />

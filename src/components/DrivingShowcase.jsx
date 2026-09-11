@@ -155,7 +155,7 @@ export default function DrivingShowcase() {
     const currentItem = showcaseItems[currentIndex];
 
     return (
-        <section className="relative w-full h-screen bg-white flex flex-col justify-center gap-4 md:gap-5 py-12 px-6 md:px-20 overflow-hidden">
+        <section className="relative w-full h-dvh bg-white flex flex-col justify-center gap-4 md:gap-5 py-12 px-6 md:px-20 overflow-hidden">
         
         {/* 상단 타이틀 */}
         <div className="text-left flex-shrink-0">
