@@ -76,7 +76,7 @@ export default function MechanismSection() {
             <h3 className="text-2xl md:text-3xl font-semibold mb-8 text-gray-800">{t('mechanism.subtitle')}</h3>
           </div>
           
-          <div className="mt-auto flex flex-col gap-6 pt-[45vh] md:p5-0 pb-6 md:gap-8">
+          <div className="mt-auto flex flex-col gap-6 pt-[30vh] md:p5-0 pb-6 md:gap-8">
             <div ref={text1Ref} className="border-l-2 border-black pl-5 opacity-0">
               <h4 className="text-xl font-bold mb-1 md:mb-2">{t('mechanism.item0.title')}</h4>
               <p className="text-gray-600 leading-relaxed font-medium text-sm md:text-base">
