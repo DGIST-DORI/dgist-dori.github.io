@@ -25,12 +25,16 @@
         "desc": "Smooth wheel operation in a flat floor environment"
       },
       {
-        "title": "Wheel Transform Demo",
-        "desc": "Rubik's cube rotation and wheel switching"
+        "title": "Indoor Hallway Driving",
+        "desc": "Smooth wheel operation in a flat floor environment"
       },
       {
-        "title": "Outdoor Sidewalk Driving",
-        "desc": "Outdoor wheel mode for rough road surfaces"
+        "title": "Autonomous Driving Simulation",
+        "desc": "Understanding intent and guiding the way through conversation"
+      },
+      {
+        "title": "Outdoor Wheel Enhancement",
+        "desc": "More robust version designed for outdoor environments"
       }
     ],
     "prev": "Previous slide",
