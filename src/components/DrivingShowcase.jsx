@@ -30,6 +30,11 @@ export default function DrivingShowcase() {
     const isDraggingRef = useRef(false);
     const dragStartXRef = useRef(0);
     const dragStartScrollLeftRef = useRef(0);
+    // 인디케이터/화살표 클릭으로 프로그래매틱 스크롤이 진행 중인 동안엔
+    // 네이티브 scroll 이벤트 기반의 "가장 가까운 카드" 재계산이 끼어들어
+    // currentIndex를 덮어쓰지 않도록 막는 플래그
+    const isProgrammaticScrollRef = useRef(false);
+    const programmaticScrollFallbackRef = useRef(null);
 
     // 현재 스크롤 위치에서 컨테이너 정중앙에 가장 가까운 카드의 인덱스를 계산
     const getClosestIndex = useCallback(() => {
@@ -56,6 +61,16 @@ export default function DrivingShowcase() {
         const card = cardRefs.current[index];
         if (!container || !card) return;
         const target = card.offsetLeft + card.offsetWidth / 2 - container.clientWidth / 2;
+
+        // 프로그래매틱 스크롤 시작 — 스크롤이 실제로 끝날 때까지
+        // handleScroll의 "가장 가까운 카드" 재계산을 막는다
+        isProgrammaticScrollRef.current = true;
+        clearTimeout(programmaticScrollFallbackRef.current);
+        // scrollend 미지원 브라우저를 위한 안전장치 (smooth-scroll이 이보다 오래 걸리진 않음)
+        programmaticScrollFallbackRef.current = setTimeout(() => {
+            isProgrammaticScrollRef.current = false;
+        }, 500);
+
         container.scrollTo({ left: target, behavior: 'smooth' });
         setCurrentIndex(index);
     }, []);
@@ -67,6 +82,7 @@ export default function DrivingShowcase() {
     // 가장 가까운 카드로 인디케이터/텍스트 상태만 동기화
     const handleScroll = () => {
         if (isDraggingRef.current) return; // 마우스 드래그 중엔 pointerup에서 별도 처리
+        if (isProgrammaticScrollRef.current) return; // 인디케이터/화살표 클릭발 스크롤 중엔 개입하지 않음
         clearTimeout(scrollSettleTimeoutRef.current);
         scrollSettleTimeoutRef.current = setTimeout(() => {
         setCurrentIndex(getClosestIndex());
@@ -118,7 +134,23 @@ export default function DrivingShowcase() {
         });
     }, [currentIndex]);
 
-    useEffect(() => () => clearTimeout(scrollSettleTimeoutRef.current), []);
+    // 스크롤이 실제로 완전히 멎는 시점(scrollend)에 플래그를 해제.
+    // 120ms 타이머 추측보다 정확해서, handleScroll과의 경합을 원천적으로 줄여준다.
+    useEffect(() => {
+        const container = scrollerRef.current;
+        if (!container) return;
+        const clearProgrammaticFlag = () => {
+        isProgrammaticScrollRef.current = false;
+        clearTimeout(programmaticScrollFallbackRef.current);
+        };
+        container.addEventListener('scrollend', clearProgrammaticFlag);
+        return () => container.removeEventListener('scrollend', clearProgrammaticFlag);
+    }, []);
+
+    useEffect(() => () => {
+        clearTimeout(scrollSettleTimeoutRef.current);
+        clearTimeout(programmaticScrollFallbackRef.current);
+    }, []);
 
     const currentItem = showcaseItems[currentIndex];
 
@@ -191,7 +223,17 @@ export default function DrivingShowcase() {
             {/* 좌측 균형용 빈 공간 */}
             <div className="w-12 md:w-24"></div>
 
-            {/* Dori 'o' 인디케이터 */}
+            {/* 
+                Dori 'o' 인디케이터 (원본 디자인: 단일 요소, width가 실제로 늘어남)
+                - rounded-md는 넣지 않음: rounded-full 하나만으로도 가로가 긴 박스에서
+                  자동으로 알약(스타디움) 모양이 나오고, 두 클래스가 동시에 있으면
+                  border-radius 해석이 충돌해서 어중간한 모양이 나오던 원래 버그의 원인이었음.
+                - [contain:paint] + translateZ(0): 이 요소만 독립된 페인트/컴포지팅
+                  레이어로 강제 분리. 근처에서 계속 디코딩되는 <video> 4개 때문에
+                  브라우저가 이 작은 요소의 래스터 타일을 부분적으로만 무효화해서
+                  "줄어들지 않는 유령 알약"이 잔상처럼 남는 걸 방지하려는 목적.
+                  (border-radius 자체 값은 애니메이션 내내 안 바뀌고 width만 바뀜)
+            */}
             <div className="flex items-center gap-3">
             {showcaseItems.map((_, index) => {
                 const isActive = index === currentIndex;
@@ -200,9 +242,10 @@ export default function DrivingShowcase() {
                     key={index}
                     onClick={() => scrollToIndex(index)}
                     aria-label={`Go to slide ${index + 1}`}
-                    className={`transition-all duration-300 ease-out border-2 border-black bg-transparent rounded-full cursor-pointer ${
-                    isActive 
-                        ? "w-10 h-3 rounded-md" 
+                    aria-current={isActive}
+                    className={`[contain:paint] [transform:translateZ(0)] transition-[width,opacity] duration-300 ease-out border-2 border-black bg-transparent rounded-full cursor-pointer ${
+                    isActive
+                        ? "w-10 h-3"
                         : "w-3 h-3 opacity-40 hover:opacity-80"
                     }`}
                 />
