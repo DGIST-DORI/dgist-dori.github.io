@@ -14,6 +14,8 @@ import { useGSAP } from '@gsap/react';
 
 gsap.registerPlugin(ScrollTrigger);
 
+ScrollTrigger.config({ ignoreMobileResize: true });
+
 function MainPage() {
   const canvasRef = useRef(null);
   const canvasWrapperRef = useRef(null);
