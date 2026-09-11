@@ -21,12 +21,13 @@ export default function HeroSection() {
   return (
     <section className="relative w-full h-screen flex flex-col items-center justify-between py-14 px-4 pointer-events-auto">
       <div className="text-center mt-8">
-        <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight mb-4">
-          {t('hero.title')}
-        </h1>
-        <p className="text-lg md:text-xl font-medium text-gray-800">
-          {t('hero.subtitle')}
-        </p>
+        <h1 
+          className="text-5xl md:text-7xl font-extrabold tracking-tight mb-4 break-keep"
+          dangerouslySetInnerHTML={{ __html: t('hero.title') }}
+        />
+        <p className="text-lg md:text-xl font-medium text-gray-800 break-keep"
+          dangerouslySetInnerHTML={{ __html: t('hero.subtitle') }}
+        />
       </div>
       
       <div className="text-center flex flex-col items-center gap-6 mb-8">
