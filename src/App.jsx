@@ -4,6 +4,7 @@ import Header from './components/Header';
 import HeroSection from './components/HeroSection';
 import MechanismSection from './components/MechanismSection';
 import DrivingShowcase from './components/DrivingShowcase';
+import HriSection from './components/HriSection';
 import Footer from './components/Footer';
 import CountryRegionPage from './components/CountryRegionPage';
 import ScrollToTop from './components/ScrollToTop';
@@ -153,6 +154,7 @@ function MainPage() {
 
         <div className="relative z-20 w-full bg-white">
           <DrivingShowcase />
+          <HriSection />
         </div>
       </main>
       <Footer />
