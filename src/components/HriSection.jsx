@@ -46,7 +46,7 @@ export default function HriSection() {
         </div>
 
         {/* 벤토 박스 그리드 레이아웃: 데스크탑에서 2열(양옆 배치)로 설정 */}
-        <div ref={gridRef} className="grid grid-cols-1 md:grid-cols-2 gap-6 auto-rows-[230px]">
+        <div ref={gridRef} className="grid grid-cols-1 md:grid-cols-2 gap-6 auto-rows-auto">
           
           {/* 주요 카드 1: Voice */}
           <div className="md:col-span-1 bg-white rounded-3xl p-8 md:p-10 shadow-sm border border-slate-100 flex flex-col justify-between overflow-hidden relative group">
