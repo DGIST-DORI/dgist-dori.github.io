@@ -13,7 +13,7 @@ export default function HeroSection() {
     // 기본 스크롤(scrollIntoView) 대신 GSAP 애니메이션으로 스크롤을 제어합니다.
     gsap.to(window, {
       duration: 1.5, // 1.5초 동안 천천히 이동
-      scrollTo: '#mechanism-section',
+      scrollTo: { y: '#mechanism-section', offsetY: -190 }, // offsetY는 주행 회전 끝까지 스크롤 위함
       ease: 'power3.inOut' // 처음과 끝을 부드럽게 가감속
     });
   };
