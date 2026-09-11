@@ -69,14 +69,14 @@ export default function MechanismSection() {
         ref={sectionRef} 
         className="relative w-full h-dvh flex flex-col justify-between md:justify-center px-8 md:px-24 py-24 md:py-0 pointer-events-auto bg-transparent z-10"
       >
-        <div className="w-full md:w-[450px] h-full md:h-auto flex flex-col justify-between md:justify-center pt-8 pb-0 md:py-0">
+        <div className="w-full md:w-[450px] h-full md:h-auto flex flex-col md:justify-center pt-8 pb-0 md:py-0">
           
           <div>
             <h2 className="text-4xl md:text-5xl font-extrabold mb-2 tracking-tight">{t('mechanism.title')}</h2>
             <h3 className="text-2xl md:text-3xl font-semibold mb-8 text-gray-800">{t('mechanism.subtitle')}</h3>
           </div>
           
-          <div className="flex flex-col gap-6 md:gap-8">
+          <div className="mt-auto flex flex-col gap-6 pt-[45vh] md:p5-0 pb-6 md:gap-8">
             <div ref={text1Ref} className="border-l-2 border-black pl-5 opacity-0">
               <h4 className="text-xl font-bold mb-1 md:mb-2">{t('mechanism.item0.title')}</h4>
               <p className="text-gray-600 leading-relaxed font-medium text-sm md:text-base">
