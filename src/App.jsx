@@ -159,6 +159,7 @@ export default function App() {
   return (
     <div className="min-h-screen bg-white text-black font-sans antialiased selection:bg-slate-200">
       <Router basename={import.meta.env.BASE_URL}>
+        <ScrollToTop />
         <Header />
         <Routes>
           <Route path="/" element={<MainPage />} />
